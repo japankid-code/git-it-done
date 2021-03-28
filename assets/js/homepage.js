@@ -13,7 +13,7 @@ const getUserRepos = function(user) {
                     renderRepos(data, user);
                 });
             } else {
-                alert(`ERROR: ${response.statusText}`);
+                alert(`ERROR: there was a problem with your request!`);
             }
         })
         .catch(function(error) {
