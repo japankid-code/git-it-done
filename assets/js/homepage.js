@@ -7,20 +7,13 @@ const getUserRepos = function(user) {
     // format the github api url
     let apiUrl = `https://api.github.com/users/${user}/repos`
     fetch(apiUrl)
-        .then(function(response) {
-            if (response.ok) {
-                response.json().then(function(data) {
-                    renderRepos(data, user);
-                });
-            } else {
-                alert(`ERROR: there was a problem with your request!`);
-            }
-        })
+        .then(response => response.ok ? 
+            (response.json().then(data => renderRepos(data, user)))
+            :(alert(`ERROR: there was a problem with your request!`))
         .catch(function(error) {
             alert("Unable to connect to Github");
-        })
+        }))
   };
-
 
 const formSubmitHandler = function(e) {
     e.preventDefault();
@@ -32,6 +25,15 @@ const formSubmitHandler = function(e) {
     } else {
         alert("Please enter a Github username");
     }
+}
+
+const getFeaturedRepos = function(language) {
+    let apiUrl = `https://api.github.com/search/repositories?q=${language}+is:featured&sort=help-wanted-issues`
+    fetch(apiUrl).
+        then(response => response.ok ? 
+            (response.json().then(dataObj => renderRepos(dataObj.items, language)))
+            :(alert(`error! ${response.statusText}`)))
+        
 }
 
 const renderRepos = function(repos, searchTerm) {
