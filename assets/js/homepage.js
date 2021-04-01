@@ -23,10 +23,7 @@ const getUserRepos = function(user) {
             (response.json().then(data => renderRepos(data, user)))
             // if false, catches the 400 errors+
             :(alert(`ERROR: there was a problem with your request!`)))
-        .catch((error) => { // catches the rest of the errors
-            alert("Unable to connect to Github");
-        })
-
+        .catch((error) => alert("Unable to connect to Github"));
 };
 
 const formSubmitHandler = function(e) {
