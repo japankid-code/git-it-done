@@ -17,10 +17,13 @@ const getUserRepos = function(user) {
     // format the github api url
     let apiUrl = `https://api.github.com/users/${user}/repos`
     fetch(apiUrl)
+        // response goes thru the ternary here
         .then(response => response.ok ? 
+            // if true
             (response.json().then(data => renderRepos(data, user)))
-            :(alert(`ERROR: there was a problem with your request!`))
-        .catch(function(error) {
+            // if false, catches the 400 errors+
+            :(alert(`ERROR: there was a problem with your request!`)) 
+        .catch(function(error) { // catches the rest of the errors
             alert("Unable to connect to Github");
         }))
 
