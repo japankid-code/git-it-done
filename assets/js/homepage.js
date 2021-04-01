@@ -1,7 +1,17 @@
-let userFormEl = document.getElementById("user-form");
-let nameInputEl = document.getElementById("username");
-let repoContainerEl = document.getElementById("repos-container");
-let repoSearchTerm = document.getElementById("repo-search-term");
+const userFormEl = document.getElementById("user-form");
+const nameInputEl = document.getElementById("username");
+const repoContainerEl = document.getElementById("repos-container");
+const repoSearchTerm = document.getElementById("repo-search-term");
+const languageButtonsEl = document.getElementById("language-buttons");
+
+const buttonClickHandler = (e) => {
+    let language = e.target.getAttribute("data-language");
+    if (language) {
+        getFeaturedRepos(language);
+        // clear old content
+        repoContainerEl.textContent = '';
+    }
+}
 
 const getUserRepos = function(user) {
     // format the github api url
@@ -13,7 +23,8 @@ const getUserRepos = function(user) {
         .catch(function(error) {
             alert("Unable to connect to Github");
         }))
-  };
+
+};
 
 const formSubmitHandler = function(e) {
     e.preventDefault();
@@ -69,3 +80,4 @@ const renderRepos = function(repos, searchTerm) {
 }
 
 userFormEl.addEventListener("submit", formSubmitHandler);
+languageButtonsEl.addEventListener("click", buttonClickHandler);
