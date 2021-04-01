@@ -1,26 +1,30 @@
-let userFormEl = document.getElementById("user-form");
-let nameInputEl = document.getElementById("username");
-let repoContainerEl = document.getElementById("repos-container");
-let repoSearchTerm = document.getElementById("repo-search-term");
+const userFormEl = document.getElementById("user-form");
+const nameInputEl = document.getElementById("username");
+const repoContainerEl = document.getElementById("repos-container");
+const repoSearchTerm = document.getElementById("repo-search-term");
+const languageButtonsEl = document.getElementById("language-buttons");
+
+const buttonClickHandler = (e) => {
+    let language = e.target.getAttribute("data-language");
+    if (language) {
+        getFeaturedRepos(language);
+        // clear old content
+        repoContainerEl.textContent = '';
+    }
+}
 
 const getUserRepos = function(user) {
     // format the github api url
     let apiUrl = `https://api.github.com/users/${user}/repos`
     fetch(apiUrl)
-        .then(function(response) {
-            if (response.ok) {
-                response.json().then(function(data) {
-                    renderRepos(data, user);
-                });
-            } else {
-                alert(`ERROR: there was a problem with your request!`);
-            }
-        })
+        .then(response => response.ok ? 
+            (response.json().then(data => renderRepos(data, user)))
+            :(alert(`ERROR: there was a problem with your request!`))
         .catch(function(error) {
             alert("Unable to connect to Github");
-        })
-  };
+        }))
 
+};
 
 const formSubmitHandler = function(e) {
     e.preventDefault();
@@ -34,6 +38,15 @@ const formSubmitHandler = function(e) {
     }
 }
 
+const getFeaturedRepos = function(language) {
+    let apiUrl = `https://api.github.com/search/repositories?q=${language}+is:featured&sort=help-wanted-issues`
+    fetch(apiUrl).
+        then(response => response.ok ? 
+            (response.json().then(dataObj => renderRepos(dataObj.items, language)))
+            :(alert(`error! ${response.statusText}`)))
+        
+}
+
 const renderRepos = function(repos, searchTerm) {
     repoContainerEl.textContent = '';
     repoSearchTerm.textContent = searchTerm;
@@ -45,8 +58,9 @@ const renderRepos = function(repos, searchTerm) {
         // format repo name
         let repoName = `${repos[i].owner.login}/${repos[i].name}`;
         // create a container for each repo
-        let repoEl = document.createElement("div");
+        let repoEl = document.createElement("a");
         repoEl.classList = "list-item flex-row justify-space-between align-center";
+        repoEl.setAttribute("href", `./single-repo.html?repo=${repoName}`)
         // create span ele to hold repo name
         var titleEl = document.createElement("span");
         titleEl.textContent = repoName;
@@ -66,3 +80,4 @@ const renderRepos = function(repos, searchTerm) {
 }
 
 userFormEl.addEventListener("submit", formSubmitHandler);
+languageButtonsEl.addEventListener("click", buttonClickHandler);
